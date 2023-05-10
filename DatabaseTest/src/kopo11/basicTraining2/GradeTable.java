@@ -17,7 +17,7 @@ public class GradeTable {
 		Statement kopo11_stmt = kopo11_conn.createStatement();
 		
 		// freewifi 테이블 데이터베이스를 완전히 삭제하는 쿼리
-//		kopo11_stmt.execute("drop table GradeList;");
+		kopo11_stmt.execute("drop table GradeList;");
 		
 		kopo11_stmt.execute(  "create table GradeList(" // sql 쿼리 실행 : GradeList 테이블을 만들고 
 				+"studentID int not null,"				// 1.studentID field not null 지정
