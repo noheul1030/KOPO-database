@@ -1,0 +1,115 @@
+
+
+//DF_TABLE:THTSKS010H00
+//DF_TITLE:주식 일별 이력
+
+typedef struct
+{
+    char    stnd_iscd[12+1];                    /*  NOT_NULL 표준 종목코드                      */
+    int     bsop_date;                          /*  NOT_NULL 주식 영업 일자                     */
+    char    shrn_iscd[9+1];                     /*  NOT_NULL 유가증권 단축 종목코드             */
+    int     stck_prpr;                          /*  주식 종가                                   */
+    int     stck_oprc;                          /*  주식 시가                                   */
+    int     stck_hgpr;                          /*  주식 최고가                                 */
+    int     stck_lwpr;                          /*  주식 최저가                                 */
+    char    prdy_vrss_sign[1+1];                /*  전일 대비 부호                              */
+    int     prdy_vrss;                          /*  전일 대비                                   */
+    float   prdy_ctrt;                          /*  전일 대비율                                 */
+    long    prdy_vol;                           /*  전일 거래량                                 */
+    long    acml_vol;                           /*  누적 거래량                                 */
+    long    acml_tr_pbmn;                       /*  누적 거래 대금                              */
+    int     askp1;                              /*  매도호가1                                   */
+    int     bidp1;                              /*  매수호가1                                   */
+    long    total_askp_rsqn;                    /*  총 매도호가 잔량                            */
+    long    total_bidp_rsqn;                    /*  총 매수호가 잔량                            */
+    long    seln_cntg_smtn;                     /*  매도 체결 합계                              */
+    long    shnu_cntg_smtn;                     /*  매수 체결 합계                              */
+    long    seln_tr_pbmn;                       /*  매도 거래 대금(누적)                        */
+    long    shnu_tr_pbmn;                       /*  매수 거래 대금(누적)                        */
+    int     seln_cntg_csnu;                     /*  매도 체결 건수                              */
+    int     shnu_cntg_csnu;                     /*  매수 체결 건수                              */
+    int     w52_hgpr;                           /*  52주일 최고가                               */
+    int     w52_lwpr;                           /*  52주일 최저가                               */
+    int     w52_hgpr_date;                      /*  52주일 최고가 일자                          */
+    int     w52_lwpr_date;                      /*  52주일 최저가 일자                          */
+    int     ovtm_untp_bsop_hour;                /*  시간외 단일가 최종 시간                     */
+    int     ovtm_untp_prpr;                     /*  시간외 단일가 현재가                        */
+    int     ovtm_untp_prdy_vrss;                /*  시간외 단일가 전일 대비                     */
+    char    ovtm_untp_prdy_vrss_sign[1+1];      /*  시간외 단일가 전일 대비 부호                */
+    int     ovtm_untp_askp1;                    /*  시간외 단일가 매도호가1                     */
+    int     ovtm_untp_bidp1;                    /*  시간외 단일가 매수호가1                     */
+    long    ovtm_untp_vol;                      /*  시간외 단일가 거래량                        */
+    long    ovtm_untp_tr_pbmn;                  /*  시간외 단일가 거래 대금                     */
+    int     ovtm_untp_oprc;                     /*  시간외 단일가 시가                          */
+	    int     ovtm_untp_hgpr;                     /*  시간외 단일가 최고가                        */
+    int     ovtm_untp_lwpr;                     /*  시간외 단일가 최저가                        */
+    long    mkob_otcp_vol;                      /*  장개시전 시간외종가 거래량                  */
+    long    mkob_otcp_tr_pbmn;                  /*  장개시전 시간외종가 거래 대금               */
+    long    mkfa_otcp_vol;                      /*  장종료후 시간외종가 거래량                  */
+    long    mkfa_otcp_tr_pbmn;                  /*  장종료후 시간외종가 거래 대금               */
+    char    mrkt_div_cls_code[1+1];             /*  시장 분류 구분 코드                         */
+    long    pstc_dvdn_amt;                      /*  주당 배당 금액                              */
+    long    lstn_stcn;                          /*  상장 주수                                   */
+    int     stck_sdpr;                          /*  주식 기준가                                 */
+    float   stck_fcam;                          /*  주식 액면가                                 */
+    double  wghn_avrg_stck_prc;                 /*  가중 평균 주식 가격                         */
+    float   issu_limt_rate;                     /*  종목 한도 비율                              */
+    long    frgn_limt_qty;                      /*  외국인 한도 수량                            */
+    long    oder_able_qty;                      /*  주문 가능 수량                              */
+    char    frgn_limt_exhs_cls_code[1+1];       /*  외국인 한도 소진 구분 코드                  */
+    long    frgn_hldn_qty;                      /*  외국인 보유 수량                            */
+    float   frgn_hldn_rate;                     /*  외국인 보유 비율                            */
+    float   hts_frgn_ehrt;                      /*  HTS 외국인 소진율                           */
+    float   itmt_last_nav;                      /*  장중 최종 NAV                               */
+    float   prdy_last_nav;                      /*  전일 최종 NAV                               */
+    float   trc_errt;                           /*  추적 오차율                                 */
+    float   dprt;                               /*  괴리율                                      */
+    long    ssts_cntg_qty;                      /*  공매도차입증권매도체결수량                  */
+    long    ssts_tr_pbmn;                       /*  공매도차입증권매도거래대금                  */
+    long    frgn_ntby_qty;                      /*  외국인 순매수                               */
+    char    flng_cls_code[2+1];                 /*  락구분 코드                                 */
+    float   prtt_rate;                          /*  분할 비율                                   */
+    float   acml_prtt_rate;                     /*  누적 분할 비율                              */
+    float   stdv;                               /*  전체융자잔고비율                            */
+    float   beta_cfcn;                          /*  베타 계수(90일)                             */
+    float   crlt_cfcn;                          /*  DEL 상관 계수                               */
+    float   bull_beta;                          /*  DEL 강세 계수                               */
+    float   bear_beta;                          /*  DEL 약세 계수                               */
+    float   bull_dvtn;                          /*  DEL 강세 편차                               */
+    float   bear_dvtn;                          /*  DEL 약세 편차                               */
+    float   bull_crlt;                          /*  DEL 강세 상관계수                           */
+    float   bear_crlt;                          /*  DEL 약세 상관계수                           */
+    int     stck_mxpr;                          /*  주식 상한가                                 */
+    int     stck_llam;                          /*  주식 하한가                                 */
+    char    icic_cls_code[2+1];                 /*  증자 구분 코드                              */
+    long    itmt_vol;                           /*  장중 거래량                                 */
+    long    itmt_tr_pbmn;                       /*  장중 거래대금                               */
+    char    fcam_mod_cls_code[2+1];             /*  액면가 변경 구분 코드                       */
+	char    revl_issu_reas_code[2+1];           /*  재평가 종목 사유 코드                       */
+
+    long    orgn_ntby_qty;                      /*  기관계 순매수                               */
+
+    //fnguide data
+    int     adj_prpr;                           /*  수정주가 (교보:fnguide때문에 추가)          */
+    int     fn_oprc;                            /*  주식 시가                                   */
+    int     fn_hgpr;                            /*  주식 최고가                                 */
+    int     fn_lwpr;                            /*  주식 최저가                                 */
+    int     fn_prpr;                            /*  주식 종가                                   */
+    long    fn_acml_vol;                        /*  누적 거래량                                 */
+    long    fn_acml_tr_pbmn;                    /*  누적 거래 대금                              */
+    float   fn_prtt_rate;                       /*  분할 비율                                   */
+    char    fn_flng_cls_code[2+1];              /*  락구분 코드                                 */
+                                                /*  0-정상,1-권리,2-배당,3-권배락,              */
+                                                /*  4-신규상장,5-액면분할,6-신주상장,           */
+                                                /*  8-비공모고신규상장, 9-거래정지 : 락구분     */
+
+    // Buy-in 제도 추가 (2012.1.16)
+    int     buyin_nor_prpr;                     /* Buy-in 일반 체결가                           */
+    int     buyin_nor_prdy_vrss;                /* Buy-in 일반 종가 대비                        */
+    long    buyin_nor_vol;                      /* Buy-in 일반 체결량                           */
+    long    buyin_nor_tr_pbmn;                  /* Buy-in 일반 체결 대금                        */
+    int     buyin_tod_prpr;                     /* Buy-in 당일 체결가                           */
+    int     buyin_tod_prdy_vrss;                /* Buy-in 당일 종가 대비                        */
+    long    buyin_tod_vol;                      /* Buy-in 당일 체결량                           */
+    long    buyin_tod_tr_pbmn;                  /* Buy-in 당일 체결 대금                        */
+} DB_S010H00;   /* TABLESPACE(TSDN_QM01) */
