@@ -14,7 +14,7 @@ public class Table1Dao {
     long beforeTime = System.currentTimeMillis();
     long afterTime = 0;
 
-    public void insertData(Connection con) {
+    public void insertData(Connection con, String filePath) {
         PreparedStatement pstmt = null;
         BufferedReader br = null;
 
@@ -23,7 +23,7 @@ public class Table1Dao {
 //            String query = "insert into stockDailyPrice (stockCODE,Daily,opening_price,high_price,low_price,closing_price,trading_volume,trading_amount)"
 //            + "values (?,?,?,?,?,?,?,?)";
             pstmt = con.prepareStatement(query);
-            br = new BufferedReader(new FileReader("filename"));
+            br = new BufferedReader(new FileReader(filePath));
 
             String line;
             int loopCount = 0;
