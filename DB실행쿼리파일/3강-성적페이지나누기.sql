@@ -1,4 +1,4 @@
-use kopo11;
+use kopo11; # kopo11 
 
 select * from GradeList;
 select count(*) from GradeList;
@@ -32,7 +32,37 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL print_report(6, 25);
+CALL print_report(5, 25);
+
+## 현재 페이지의 합계 
+select "현재페이지"
+		,''
+        ,''
+        ,''
+        ,''
+        ,''
+from dual
+union all
+select '합계' as "현재페이지"
+		,sum(kor) as korsum
+		,sum(mat) as matsum
+		,sum(eng) as engsum
+		,sum(kor+mat+eng) as allsum
+		,sum(round(((kor+mat+eng)/3), 1)) as avgsum
+FROM GradeList a group by a.print_report(5,25);
+union all
+SELECT '평균' as "누적페이지"
+		,round(avg(kor)) as koravg
+		,round(avg(mat)) as matavg
+		,round(avg(eng)) as engavg
+		,round(avg(kor+mat+eng)) as allavg
+		,round(avg((kor+mat+eng)/3), 1) as avgavg
+FROM GradeList limit 5, 25
+;
+
+
+
+
 
 ## 누적페이지의 합계
 SELECT "누적페이지"
@@ -49,7 +79,7 @@ SELECT '합계' as "누적페이지"
 	  ,sum(eng) as engsum
 	  ,sum((kor+mat+eng)) as allsum
 	  ,sum(round(((kor+mat+eng)/3), 1)) as avgsum
-FROM gradelist
+FROM GradeList
 union all
 SELECT '평균' as "누적페이지"
       ,round(avg(kor)) as koravg
@@ -57,15 +87,9 @@ SELECT '평균' as "누적페이지"
 	  ,round(avg(eng)) as engavg
 	  ,round(avg((kor+mat+eng))) as allavg
 	  ,round(avg((kor+mat+eng)/3), 1) as avgavg
-FROM gradelist
+FROM GradeList
 ;
 
-
-
-SELECT AVG(value) AS average
-FROM (
-  SELECT value
-  FROM GradeList
-  LIMIT 100, 25
-) AS subquery;
-
+# 등수 매기기
+select  ranking(kor, eng, mat)as 등수, studentID as 학번, name as 이름, kor as 국어, eng as 영어, mat as 수학
+ , (kor+eng+mat) as 총점, (kor+eng+mat)/3 as 평균 from GradeList;
