@@ -44,24 +44,12 @@ select "현재페이지"
 from dual
 union all
 select '합계' as "현재페이지"
-		,sum(kor) as korsum
-		,sum(mat) as matsum
-		,sum(eng) as engsum
-		,sum(kor+mat+eng) as allsum
-		,sum(round(((kor+mat+eng)/3), 1)) as avgsum
-FROM GradeList a group by a.print_report(5,25);
-union all
-SELECT '평균' as "누적페이지"
-		,round(avg(kor)) as koravg
-		,round(avg(mat)) as matavg
-		,round(avg(eng)) as engavg
-		,round(avg(kor+mat+eng)) as allavg
-		,round(avg((kor+mat+eng)/3), 1) as avgavg
-FROM GradeList limit 5, 25
-;
-
-
-
+		,sum(a.kor) as korsum
+		,sum(a.mat) as matsum
+		,sum(a.eng) as engsum
+		,sum(a.kor+a.mat+a.eng) as allsum
+		,ROUND(AVG(a.kor + a.mat + a.eng), 1) AS avgsum
+FROM (call print_report(5, 25)) as a;
 
 
 ## 누적페이지의 합계
