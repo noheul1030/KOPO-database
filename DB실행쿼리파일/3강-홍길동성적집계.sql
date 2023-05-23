@@ -37,6 +37,7 @@ select name as 이름, id as 학번, kor as 국어, eng as 영어, mat as 수학
 	(kor+eng+mat)/3 as 평균 from examtable;
     
 #######################################################################################
+
 drop function if exists ranking;
 delimiter $$
 create function ranking(_kor integer,_eng integer, _mat integer) returns integer 
@@ -45,14 +46,14 @@ begin
     declare _sum integer;
     set _sum =_kor+_eng+_mat;
     select count(*) into _rank from examtable where kor+eng+mat > _sum;
-return _rank+1;
+return _rank + 1;
 end $$
 delimiter ;
 
-# 실습 2
+# 실습 1 학번 이름 국어 영어 수학 총점 평균 등수 가 나오는 결과 테이블을 만드시오
 select  ranking(kor, eng, mat)as 등수, name as 이름, id as 학번, kor as 국어, eng as 영어, mat as 수학
  , (kor+eng+mat) as 총점, (kor+eng+mat)/3 as 평균 from examtable;
-# 실습 3
+# 실습 2 등수를 출력하는 함수를 만드시오 ,# 실습 3 해당 테이블을 오름차순 소트 하시오 
 select  ranking(kor, eng, mat)as 등수,name as 이름, id as 학번, kor as 국어, eng as 영어, mat as 수학
  , (kor+eng+mat) as 총점, (kor+eng+mat)/3 as 평균 from examtable order by 등수;
 
