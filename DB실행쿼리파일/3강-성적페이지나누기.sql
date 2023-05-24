@@ -1,6 +1,9 @@
-use noheul; # kopo11 
+use kopo11; # kopo11 
 
-drop procedure if exists print_report;
+select * from GradeList; # 테이블 조회
+select count(*) from GradeList; # 테이블 전체 행 개수 조회
+
+drop procedure if exists print_report; # 프로시저가 존재하면 삭재
 DELIMITER $$
 CREATE PROCEDURE print_report(_page int, _page_size int)
 BEGIN
@@ -13,7 +16,7 @@ BEGIN
 			SET _start = (_page - 1) * _page_size;
 		elseif _maxpage < _page then
 			SET _start = (_maxpage - 1)* _page_size;
-		end if;
+		end if; 
 	
     SELECT studentID as 번호
           , name as 이름
@@ -24,15 +27,13 @@ BEGIN
           , (kor+eng+mat)/3 평균 
     FROM GradeList
     LIMIT _start, _page_size;
-   
-
 END $$
 DELIMITER ;
 
-CALL print_report(1, 25);
+CALL print_report(5, 25);
 
 # 현재 페이지 테이블
-drop procedure if exists print_report2; # 테이블이 존재하면 삭제
+drop procedure if exists print_report2; # 프로시저가 존재하면 삭제
 DELIMITER $$ # 딜리미터 선언
 CREATE PROCEDURE print_report2(_page int, _page_size int) # 프로시저 생성
 BEGIN # 시작
@@ -48,6 +49,9 @@ BEGIN # 시작
 		# maxpage가 page 보다 작으면 true 조건문
 		elseif _maxpage < _page then
 			SET _start = (_maxpage - 1)* _page_size; # 변수 값 지정
+		# page가 0보다 작으면
+		elseif _page < 0 then
+			set _start = 0 * _page_size; # 변수 값 지정
 		end if; # if 문 종료
 	
     # 비어있는 임의의 테이블 select
@@ -57,7 +61,7 @@ BEGIN # 시작
 	select '합계' as "현재페이지"
 		,sum(kor) as korsum ,sum(eng) as engsum
 		,sum(mat) as matsum ,sum(kor+eng+mat) as pagesum
-		,sum(floor((kor+eng+mat)/3)) as pageavg 
+		,round(sum((kor+eng+mat)/3),1) as pageavg 
 	# 테이블의 limit만큼 제한 전체 조회
 	from (select * from GradeList LIMIT _start, _page_size) as a 
     union all # 테이블 모든 값 병합하기
@@ -65,13 +69,13 @@ BEGIN # 시작
 	select '평균' as "현재페이지"
 		,floor(avg(kor)) as koravg ,floor(avg(eng)) as matavg
 		,floor(avg(mat)) as engavg ,floor(avg(kor+eng+mat)) as allavg
-		,round((avg(floor((kor+eng+mat)/3))),1) as avgavg # 소숫점 0.1자리까지 나오게
+		,round((avg((kor+eng+mat)/3)),1) as avgavg # 소숫점 0.1자리까지 나오게
 	# 테이블의 limit만큼 제한 전체 조회
 	FROM (select * from GradeList LIMIT _start, _page_size)as b;
 END $$
 DELIMITER ;
 
-CALL print_report2(1, 25); # 함수 호출
+CALL print_report2(-1, 25); # 함수 호출
 
 # 누적 페이지 테이블
 drop procedure if exists print_report3;
@@ -85,12 +89,18 @@ BEGIN # 시작
     set _start = 0; # 변수 초기값 지정
     # 최대 페이지에 대한 값 계산
     set _maxpage = (select count(*) from GradeList)/_page_size;
-		# page보다 크거나 같고, 그리고 page가 0보다 크면 true 조건문
+		
+        # page보다 크거나 같고, 그리고 page가 0보다 크면 true 조건문
 		if _maxpage >= _page and _page > 0 then
 			SET _start = (_page - 1) * _page_size; # 변수 값 지정
-		# maxpage가 page 보다 작으면 true 조건문
+		# maxpage보다 page가 크면 
 		elseif _maxpage < _page then
-			SET _start = (_maxpage - 1)* _page_size; # 변수 값 지정
+			SET _start = (_maxpage - 1)* _page_size;  # 변수 값 지정
+		end if; # if 문 종료
+		if _page <= 0 then
+			set _sumpage = 1 * _page_size; # 변수 값 지정
+		elseif _page > 0 then
+			set _sumpage = _page * _page_size; # 변수 값 지정
 		end if; # if 문 종료
 		
 	# 총합누적페이지의 값 계산
@@ -103,7 +113,7 @@ BEGIN # 시작
 	select '합계' as "누적페이지"
 		,sum(kor) as korsum ,sum(eng) as engsum
 		,sum(mat) as matsum ,sum(kor+eng+mat) as pagesum
-		,sum(floor((kor+eng+mat)/3)) as pageavg 
+		,round(sum((kor+eng+mat)/3),1) as pageavg 
 	# 테이블의 limit만큼 제한 전체 조회
 	from (select * from GradeList LIMIT 0, _sumpage) as a 
 	union all # 테이블 모든 값 병합하기
@@ -111,12 +121,12 @@ BEGIN # 시작
 	SELECT '평균' as "누적페이지"
 		,floor(avg(kor)) as koravg ,floor(avg(eng)) as matavg
 		,floor(avg(mat)) as engavg ,floor(avg(kor+eng+mat)) as allavg
-		,floor(avg(floor((kor+eng+mat)/3))) as avgavg
+		,round((avg((kor+eng+mat)/3)),1) as avgavg # 소숫점 0.1자리까지 나오게
 	FROM (select * from GradeList LIMIT 0, _sumpage)as b; # 테이블의 limit만큼 제한 전체 조회
 END $$
 DELIMITER ;
 
-CALL print_report3(1, 25); # 함수 호출
+CALL print_report3(5, 25); # 함수 호출
 
 
 
@@ -147,5 +157,6 @@ FROM GradeList
 ;
 
 # 등수 매기기
-select  ranking(kor, eng, mat)as 등수, studentID as 학번, name as 이름, kor as 국어, eng as 영어, mat as 수학
- , (kor+eng+mat) as 총점, (kor+eng+mat)/3 as 평균 from GradeList;
+select  studentID as 학번, name as 이름, kor as 국어, eng as 영어, mat as 수학
+ , (kor+eng+mat) as 총점, (kor+eng+mat)/3 as 평균 , rank() over(order by kor+eng+mat desc) 
+as 등수 from GradeList;

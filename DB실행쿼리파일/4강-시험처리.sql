@@ -1,45 +1,49 @@
 use kopo11;
 
 ##################################### 과목 정답 테이블
-drop table if exists Answer;
-create table Answer (
+drop table if exists Answer; # 해당 테이블이 존재하면 삭제 
+create table Answer ( # 테이블 생성
+	# 과목ID int not null 프라이머리키 지정
 	subjectID int not null primary key,
+    # 나머지 문제 번호 칼럼들 int 지정
     a01 int, a02 int, a03 int, a04 int, a05 int, a06 int, a07 int, a08 int, a09 int, a10 int,
     a11 int, a12 int, a13 int, a14 int, a15 int, a16 int, a17 int, a18 int, a19 int, a20 int);
 desc Answer;
-delete from Answer where subjectID > 0;
-drop procedure if exists insert_Answer;
+delete from Answer where subjectID > 0; # 과목ID가 0이상이면 테이블 값 삭제 
+drop procedure if exists insert_Answer; # 프로시저가 존재하면 삭제 
 delimiter $$
-create procedure insert_Answer(_num int)
-begin
-declare _cnt int;
-set _cnt = 0;
-	_loop:loop
-		set _cnt= _cnt+1;
-		insert into Answer value 
+create procedure insert_Answer(_num int) # 프로시저 생성
+begin # 시작 
+declare _cnt int; # int 변수 선언
+set _cnt = 0; # 변수 초기값 0 지정
+	_loop:loop # 반복문
+		set _cnt= _cnt+1; # 변수값 +1
+        # 해당 테이블 컬럼들에 랜덤 1~4 숫자 입력 
+		insert into Answer value  
 		(_cnt,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1
         ,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1,rand()*3+1);
-        if _cnt = _num then
-			leave _loop;
-		end if;
-	end loop;
-end $$
+        if _cnt = _num then # cnt 값이 num값과 일치하면 true 조건문
+			leave _loop; # 반복문 떠나기
+		end if; # if문 종료
+	end loop; # loop 종료
+end $$ # 프로시저 종료
 delimiter ;
-call insert_Answer(3);
-select * from Answer;
+call insert_Answer(3); # 함수 실행
+select * from Answer; # 테이블 값 전체 조회
 
 ##################################### 시험 테이블
-drop table if exists Testing;    
-create table Testing (
-	subjectID int not null,
-    stu_name varchar(20),
-    stu_id int not null,
+drop table if exists Testing; # 해당 테이블이 존재하면 삭제 
+create table Testing ( # 테이블 생성
+	subjectID int not null, # 칼럼 int not null 지정
+    stu_name varchar(20), # 칼럼 char 지정
+    stu_id int not null, # 칼럼 int not null 지정
+    # 나머지 문제 번호 칼럼들 int 지정
     a01 int, a02 int, a03 int, a04 int, a05 int, a06 int, a07 int, a08 int, a09 int, a10 int,
     a11 int, a12 int, a13 int, a14 int, a15 int, a16 int, a17 int, a18 int, a19 int, a20 int,
-    primary key(subjectID, stu_id));
+    primary key(subjectID, stu_id)); # 프라이머리키 지정 과목ID, 학번
 desc Testing;
-delete from Testing where subjectID > 0;
-drop procedure if exists insert_Test;
+delete from Testing where subjectID > 0; # 과목ID가 0이상이면 테이블 값 삭제 
+drop procedure if exists insert_Test; # 프로시저가 존재하면 삭제
 delimiter $$
 create procedure insert_Test(_num int)
 begin
@@ -78,62 +82,70 @@ call insert_Test(1000);
 select * from Testing order by stu_id, subjectID;
 
 ##################################### 채점 테이블
-drop table if exists Scoring;
-create table Scoring(
-    subjectID int not null,
-    stu_name varchar(20),
-    stu_id int not null,
+drop table if exists Scoring; # 해당 테이블이 존재하면 삭제
+create table Scoring( # 테이블 생성
+    subjectID int not null, # 칼럼 int not null 지정
+    stu_name varchar(20), # 칼럼 char 지정
+    stu_id int not null, # 칼럼 int not null 지정
+    # 나머지 문제 번호 칼럼들 int 지정
     a01 int, a02 int, a03 int, a04 int, a05 int, a06 int, a07 int, a08 int, a09 int, a10 int,
     a11 int, a12 int, a13 int, a14 int, a15 int, a16 int, a17 int, a18 int, a19 int, a20 int,
-    score int,
-    primary key(subjectID, stu_id));
+    score int, # 칼럼 int 지정
+    primary key(subjectID, stu_id)); # 프라이머리키 지정 과목ID, 학번
 desc Scoring;
 
-DELETE FROM Scoring where subjectID <4;
+DELETE FROM Scoring where subjectID <4; # 테이블의 subhectID 값이 4 이상이면 삭제 
+# Scoring 테이블 값 입력 
 INSERT INTO Scoring select b.subjectID, b.stu_name, b.stu_id,
+# a 문제와 b 문제가 같으면 1 저장, 다르면 0 저장 
 (a.a01=b.a01) as s01 , (a.a02=b.a02) as s02 , (a.a03=b.a03) as s03 , (a.a04=b.a04) as s04 , (a.a05=b.a05) as s05 , 
 (a.a06=b.a06) as s06 , (a.a07=b.a07) as s07 , (a.a08=b.a08) as s08 , (a.a09=b.a09) as s09 , (a.a10=b.a10) as s10 ,
 (a.a11=b.a11) as s11 , (a.a12=b.a12) as s12 , (a.a13=b.a13) as s13 , (a.a14=b.a14) as s14 , (a.a15=b.a15) as s15 , 
 (a.a16=b.a16) as s16 , (a.a17=b.a17) as s17 , (a.a18=b.a18) as s18 , (a.a19=b.a19) as s19 , (a.a20=b.a20) as s20 ,
+# a 문제와 b 문제가 같으면 1 저장, 다르면 0 이 나온 값을 모두 더하고 *5 해서 총합을 계산
 ((a.a01=b.a01)+(a.a02=b.a02)+(a.a03=b.a03)+(a.a04=b.a04)+(a.a05=b.a05)+
 (a.a06=b.a06)+(a.a07=b.a07)+(a.a08=b.a08)+(a.a09=b.a09)+(a.a10=b.a10)+
 (a.a11=b.a11)+(a.a12=b.a12)+(a.a13=b.a13)+(a.a14=b.a14)+(a.a15=b.a15)+
 (a.a16=b.a16)+(a.a17=b.a17)+(a.a18=b.a18)+(a.a19=b.a19)+(a.a20=b.a20))*5 as sum
-from Answer as a, Testing as b where a.subjectID = b.subjectID;
+# Answer 조인트 a, Testing 조인트 b 지정, a 과목ID와 b 과목ID가 같은 값을 찾는다.
+from Answer as a, Testing as b where a.subjectID = b.subjectID; 
 
+# 과목ID3번에 해당하는 테이블 전체 값을 조회
 select * from Scoring where subjectID = 3;
 
 ##################################### 채점리포트 테이블
-drop table if exists Reporttable;    
-create table Reporttable (
-    stu_name varchar(20),
-    stu_id int not null primary key,
-    kor int, eng int, mat int);
+drop table if exists Reporttable; # 해당 테이블이 존재하면 삭제 
+create table Reporttable ( # 테이블 생성
+    stu_name varchar(20), # 칼럼 char 지정
+    stu_id int not null primary key, # 칼럼 int not null 프라이머리키 지정
+    kor int, eng int, mat int); # 칼럼 int 지정 
 desc Reporttable;
 
-use kopo11;
-DELETE FROM Reporttable;
+DELETE FROM Reporttable; # 해당 테이블 값 삭제
+# 값 입력 
 INSERT INTO Reporttable (stu_name, stu_id, kor, eng, mat)
 select a.stu_name, a.stu_id,
 (a.score) as kor,(a.score) as eng,(a.score) as mat
+# Scoring 조인트 a 지정, a의 subjectID 1,2,3 에 해당하는 조건 조회
 from Scoring as a WHERE a.subjectID IN (1, 2, 3);
-
+# 값 입력
 insert into Reporttable
-select distinct a.stu_name,a.stu_id,
-	a1.score,
-    a2.score,
-    a3.score 
-from Scoring as a,
-	Scoring as a1,
-    Scoring as a2,
-    Scoring as a3
-where a1.stu_id = a.stu_id
-	and a2.stu_id = a.stu_id
-	and a3.stu_id = a.stu_id
-    and a1.subjectID = 1
-	and a2.subjectID = 2
-	and a3.subjectID = 3;
+select distinct a.stu_name,a.stu_id, 
+	a1.score, # 과목ID 1의 score 칼럼
+    a2.score, # 과목ID 2의 score 칼럼
+    a3.score # 과목ID 3의 score 칼럼
+from Scoring as a, # Scoring 조인트 a 지정
+	Scoring as a1, # Scoring 조인트 a1 지정
+    Scoring as a2, # Scoring 조인트 a2 지정
+    Scoring as a3 # Scoring 조인트 a3 지정
+where a1.stu_id = a.stu_id # 두 조건이 같고 그리고 
+	and a2.stu_id = a.stu_id # 두 조건이 같고 그리고 
+	and a3.stu_id = a.stu_id # 두 조건이 같고 그리고 
+    and a1.subjectID = 1 # a1의 과목ID는 1 그리고 
+	and a2.subjectID = 2 # a1의 과목ID는 2 그리고 
+	and a3.subjectID = 3; # a1의 과목ID는 3 에 해당하는 조건
 
+# Reporttable의 총합의 합계 평균의 합계 랭킹 조회
 select *, kor+eng+mat as sum, (kor+eng+mat)/3 as ave, row_number() over (order by kor+eng+mat desc) as ranking from Reporttable;
 
 # 과목 점수별 득점자수,득점률 리포트
